@@ -1,0 +1,263 @@
+{
+  "version": 4,
+  "terraform_version": "1.5.2",
+  "serial": 97,
+  "lineage": "8f3f6617-816e-530c-3eba-dce3e56dbba3",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "aws_iam_policy",
+      "name": "worker_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "helm_release",
+      "name": "argocd",
+      "provider": "provider[\"registry.terraform.io/hashicorp/helm\"]",
+      "instances": [
+        {
+          "status": "tainted",
+          "schema_version": 1,
+          "attributes": {
+            "atomic": false,
+            "chart": "argo-cd",
+            "cleanup_on_fail": false,
+            "create_namespace": true,
+            "dependency_update": false,
+            "description": null,
+            "devel": null,
+            "disable_crd_hooks": false,
+            "disable_openapi_validation": false,
+            "disable_webhooks": false,
+            "force_update": false,
+            "id": "argocd",
+            "keyring": null,
+            "lint": false,
+            "manifest": null,
+            "max_history": 0,
+            "metadata": [
+              {
+                "app_version": "v2.2.5",
+                "chart": "argo-cd",
+                "name": "argocd",
+                "namespace": "argocd",
+                "revision": 1,
+                "values": "{}",
+                "version": "3.35.4"
+              }
+            ],
+            "name": "argocd",
+            "namespace": "argocd",
+            "pass_credentials": false,
+            "postrender": [],
+            "recreate_pods": false,
+            "render_subchart_notes": true,
+            "replace": false,
+            "repository": "https://argoproj.github.io/argo-helm",
+            "repository_ca_file": null,
+            "repository_cert_file": null,
+            "repository_key_file": null,
+            "repository_password": null,
+            "repository_username": null,
+            "reset_values": false,
+            "reuse_values": false,
+            "set": [],
+            "set_list": [],
+            "set_sensitive": [],
+            "skip_crds": false,
+            "status": "failed",
+            "timeout": 300,
+            "values": null,
+            "verify": false,
+            "version": "3.35.4",
+            "wait": true,
+            "wait_for_jobs": false
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "module.eks.aws_eks_cluster.this"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "helm_release",
+      "name": "ingress",
+      "provider": "provider[\"registry.terraform.io/hashicorp/helm\"]",
+      "instances": []
+    },
+    {
+      "mode": "managed",
+      "type": "kubectl_manifest",
+      "name": "argocd-ingress",
+      "provider": "provider[\"registry.terraform.io/gavinbunney/kubectl\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "api_version": "networking.k8s.io/v1",
+            "apply_only": false,
+            "force_conflicts": false,
+            "force_new": false,
+            "id": "/apis/networking.k8s.io/v1/namespaces/argocd/ingresses/argocd",
+            "ignore_fields": null,
+            "kind": "Ingress",
+            "live_manifest_incluster": "0e16eb2070c770262beb1dc7375544b8f7215fdda404181482400cfc72e0716d",
+            "live_uid": "a5f4c90d-f82e-43a2-9f24-ea9f4728c135",
+            "name": "argocd",
+            "namespace": "argocd",
+            "override_namespace": null,
+            "sensitive_fields": null,
+            "server_side_apply": false,
+            "timeouts": null,
+            "uid": "a5f4c90d-f82e-43a2-9f24-ea9f4728c135",
+            "validate_schema": true,
+            "wait": null,
+            "wait_for_rollout": true,
+            "yaml_body": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  annotations:\n    alb.ingress.kubernetes.io/group.name: alb-marfeel-production\n    alb.ingress.kubernetes.io/scheme: internet-facing\n    alb.ingress.kubernetes.io/target-type: 'ip'\n    alb.ingress.kubernetes.io/backend-protocol: HTTPS\n    alb.ingress.kubernetes.io/subnets: subnet-03457033b0a7b982a , subnet-08d3bff7b5d8f9eb9\n    # Use this annotation (which must match a service name) to route traffic to HTTP2 backends.\n    alb.ingress.kubernetes.io/conditions.argogrpc: |\n      [{\"field\":\"http-header\",\"httpHeaderConfig\":{\"httpHeaderName\": \"Content-Type\", \"values\":[\"application/grpc\"]}}]\n    alb.ingress.kubernetes.io/listen-ports: '[{\"HTTPS\":443}]'\n    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:405632504902:certificate/4e06880c-18b5-427c-b231-e970e33a416c\n  name: argocd\n  namespace: argocd\n\nspec:\n  ingressClassName: alb\n  rules:\n  - host: argo-production.jmsamudio.com\n    http:\n      paths:\n      - path: /\n        backend:\n          service:\n            name: argogrpc\n            port:\n              number: 443\n        pathType: Prefix\n      - path: /\n        backend:\n          service:\n            name: argocd-server\n            port:\n              number: 443\n        pathType: Prefix\n  tls:\n  - hosts:\n    - argo-production.jmsamudio.com\n",
+            "yaml_body_parsed": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  annotations:\n    alb.ingress.kubernetes.io/backend-protocol: HTTPS\n    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:405632504902:certificate/4e06880c-18b5-427c-b231-e970e33a416c\n    alb.ingress.kubernetes.io/conditions.argogrpc: |\n      [{\"field\":\"http-header\",\"httpHeaderConfig\":{\"httpHeaderName\": \"Content-Type\", \"values\":[\"application/grpc\"]}}]\n    alb.ingress.kubernetes.io/group.name: alb-marfeel-production\n    alb.ingress.kubernetes.io/listen-ports: '[{\"HTTPS\":443}]'\n    alb.ingress.kubernetes.io/scheme: internet-facing\n    alb.ingress.kubernetes.io/subnets: subnet-03457033b0a7b982a , subnet-08d3bff7b5d8f9eb9\n    alb.ingress.kubernetes.io/target-type: ip\n  name: argocd\n  namespace: argocd\nspec:\n  ingressClassName: alb\n  rules:\n  - host: argo-production.jmsamudio.com\n    http:\n      paths:\n      - backend:\n          service:\n            name: argogrpc\n            port:\n              number: 443\n        path: /\n        pathType: Prefix\n      - backend:\n          service:\n            name: argocd-server\n            port:\n              number: 443\n        path: /\n        pathType: Prefix\n  tls:\n  - hosts:\n    - argo-production.jmsamudio.com\n",
+            "yaml_incluster": "0e16eb2070c770262beb1dc7375544b8f7215fdda404181482400cfc72e0716d"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDB9LCJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "module.vpc.aws_subnet.public",
+            "module.vpc.aws_vpc.this",
+            "module.vpc.aws_vpc_ipv4_cidr_block_association.this"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "kubectl_manifest",
+      "name": "argocd-service",
+      "provider": "provider[\"registry.terraform.io/gavinbunney/kubectl\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "api_version": "v1",
+            "apply_only": false,
+            "force_conflicts": false,
+            "force_new": false,
+            "id": "/api/v1/namespaces/argocd/services/argogrpc",
+            "ignore_fields": null,
+            "kind": "Service",
+            "live_manifest_incluster": "79666c37224d4e7ea8b2753ac42c76eee095c4046bd967ffcb34ab276546eab9",
+            "live_uid": "8cc9719b-544a-48c4-9b46-1aadba0170a6",
+            "name": "argogrpc",
+            "namespace": "argocd",
+            "override_namespace": null,
+            "sensitive_fields": null,
+            "server_side_apply": false,
+            "timeouts": null,
+            "uid": "8cc9719b-544a-48c4-9b46-1aadba0170a6",
+            "validate_schema": true,
+            "wait": null,
+            "wait_for_rollout": true,
+            "yaml_body": "apiVersion: v1\nkind: Service\nmetadata:\n  annotations:\n    alb.ingress.kubernetes.io/backend-protocol-version: HTTP2 #This tells AWS to send traffic from the ALB using HTTP2. Can use GRPC as well if you want to leverage GRPC specific features\n  labels:\n    app: argogrpc\n  name: argogrpc\n  namespace: argocd\nspec:\n  ports:\n  - name: \"443\"\n    port: 443\n    protocol: TCP\n    targetPort: 8080\n  selector:\n    app.kubernetes.io/name: argocd-server\n  sessionAffinity: None\n  type: NodePort\n",
+            "yaml_body_parsed": "apiVersion: v1\nkind: Service\nmetadata:\n  annotations:\n    alb.ingress.kubernetes.io/backend-protocol-version: HTTP2\n  labels:\n    app: argogrpc\n  name: argogrpc\n  namespace: argocd\nspec:\n  ports:\n  - name: \"443\"\n    port: 443\n    protocol: TCP\n    targetPort: 8080\n  selector:\n    app.kubernetes.io/name: argocd-server\n  sessionAffinity: None\n  type: NodePort\n",
+            "yaml_incluster": "79666c37224d4e7ea8b2753ac42c76eee095c4046bd967ffcb34ab276546eab9"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDB9LCJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "module": "module.eks",
+      "mode": "managed",
+      "type": "aws_eks_addon",
+      "name": "this",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": []
+    },
+    {
+      "module": "module.eks",
+      "mode": "managed",
+      "type": "aws_eks_identity_provider_config",
+      "name": "this",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": []
+    },
+    {
+      "module": "module.eks.module.eks_managed_node_group[\"blue\"]",
+      "mode": "managed",
+      "type": "aws_security_group_rule",
+      "name": "this",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": []
+    },
+    {
+      "module": "module.eks.module.eks_managed_node_group[\"blue\"].module.user_data",
+      "mode": "data",
+      "type": "cloudinit_config",
+      "name": "linux_eks_managed_node_group",
+      "provider": "provider[\"registry.terraform.io/hashicorp/cloudinit\"]",
+      "instances": []
+    },
+    {
+      "module": "module.eks.module.eks_managed_node_group[\"green\"]",
+      "mode": "managed",
+      "type": "aws_security_group_rule",
+      "name": "this",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": []
+    },
+    {
+      "module": "module.eks.module.eks_managed_node_group[\"green\"].module.user_data",
+      "mode": "data",
+      "type": "cloudinit_config",
+      "name": "linux_eks_managed_node_group",
+      "provider": "provider[\"registry.terraform.io/hashicorp/cloudinit\"]",
+      "instances": []
+    },
+    {
+      "module": "module.eks.module.kms",
+      "mode": "managed",
+      "type": "aws_kms_external_key",
+      "name": "this",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": []
+    },
+    {
+      "module": "module.eks.module.kms",
+      "mode": "managed",
+      "type": "aws_kms_key",
+      "name": "this",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": []
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "aws_nat_gateway",
+      "name": "this",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": []
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "aws_route",
+      "name": "private_nat_gateway",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": []
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "aws_vpc_ipv4_cidr_block_association",
+      "name": "this",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": []
+    }
+  ],
+  "check_results": null
+}

@@ -1,3 +1,23 @@
+
+provider "kubectl" {
+  apply_retry_count      = 15
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  load_config_file       = false
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", "${terraform.workspace}", "--region", "${var.region}"]
+    command     = "aws"
+  }
+}
+
+data "aws_acm_certificate" "argo" {
+  domain   = "jmsamudio.com"
+  statuses = ["ISSUED"]
+}
+
+
 resource "helm_release" "argocd" {
   name = "argocd"
 
@@ -9,7 +29,10 @@ resource "helm_release" "argocd" {
 }
 
 resource "kubectl_manifest" "argocd-service" {
-    yaml_body = <<YAML
+  depends_on = [
+    module.eks
+  ]
+  yaml_body = <<YAML
 apiVersion: v1
 kind: Service
 metadata:
@@ -33,7 +56,10 @@ YAML
 }
 
 resource "kubectl_manifest" "argocd-ingress" {
-    yaml_body = <<YAML
+  depends_on = [
+    module.eks
+  ]
+  yaml_body = <<YAML
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -47,7 +73,7 @@ metadata:
     alb.ingress.kubernetes.io/conditions.argogrpc: |
       [{"field":"http-header","httpHeaderConfig":{"httpHeaderName": "Content-Type", "values":["application/grpc"]}}]
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:405632504902:certificate/4e06880c-18b5-427c-b231-e970e33a416c
+    alb.ingress.kubernetes.io/certificate-arn: ${data.aws_acm_certificate.argo.arn}
   name: argocd
   namespace: argocd
 
@@ -75,11 +101,14 @@ spec:
   - hosts:
     - argo-${terraform.workspace}.jmsamudio.com
 YAML
-  
+
 }
 
 
 resource "kubectl_manifest" "argocd-application" {
+  depends_on = [
+    module.eks
+  ]
   yaml_body = <<YAML
 apiVersion: argoproj.io/v1alpha1
 kind: Application
