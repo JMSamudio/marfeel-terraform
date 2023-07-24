@@ -12,11 +12,6 @@ provider "kubectl" {
   }
 }
 
-data "aws_acm_certificate" "argo" {
-  domain   = "jmsamudio.com"
-  statuses = ["ISSUED"]
-}
-
 
 resource "helm_release" "argocd" {
   name = "argocd"
@@ -69,11 +64,10 @@ metadata:
     alb.ingress.kubernetes.io/target-type: 'ip'
     alb.ingress.kubernetes.io/backend-protocol: HTTPS
     alb.ingress.kubernetes.io/subnets: ${module.vpc.public_subnets[0]} , ${module.vpc.public_subnets[1]}
-    # Use this annotation (which must match a service name) to route traffic to HTTP2 backends.
     alb.ingress.kubernetes.io/conditions.argogrpc: |
       [{"field":"http-header","httpHeaderConfig":{"httpHeaderName": "Content-Type", "values":["application/grpc"]}}]
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
-    alb.ingress.kubernetes.io/certificate-arn: ${data.aws_acm_certificate.argo.arn}
+    
   name: argocd
   namespace: argocd
 
@@ -97,9 +91,6 @@ spec:
             port:
               number: 443
         pathType: Prefix
-  tls:
-  - hosts:
-    - argo-${terraform.workspace}.jmsamudio.com
 YAML
 
 }

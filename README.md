@@ -7,9 +7,7 @@ Este proyecto contiene codigo en terarform para crear multiples cluster e instal
 La mejor manera que encontre reutilizando codigo fue utilizando los workspaces de terraform `terraform.workspace`. Esto permite tener tantos workspaces como cluster y argocd como se necesite. Para este caso son 3 (dev, stage y production), cada uno de ellos realiza cambios en distintos branchs.
 
 ## REQUERIMIENTOS
-1. cuenta de aws 
-2. dominio (jmsamudio.com para el ejemplo)
-3. certificado para el dominio y wildcard (jmsamudio.com y *.jmsamudio.com)
+1. cuenta de aws
 
 ### CREDENCIALES
 
@@ -38,6 +36,16 @@ La mejor manera que encontre reutilizando codigo fue utilizando los workspaces d
     - instala argocd al cluster
     - crea el service de typo NodePort y el ingress para que pueda exponerse a traves de ALB
     - manifiesto para la visualizacion del repo de acuerdo al workspace: `targetRevision:  ${terraform.workspace == "production" ? "main" : terraform.workspace}`
+
+## TEST
+Para probar el ingreso a argocd, es necesario modificar la resolucion de nombre localmente en el archivo `/etc/hosts` apuntando a la ip publica generada para el loadbalancer, por ejemplo para el ambiente de dev:
+
+`52.8.203.61 argo-dev.jmsamudio.com`
+
+La credencial se obtiene a traves de este comando:
+
+`kubectl get secret argocd-initial-admin-secret -n argocd --template={{.data.password}} | base64 -d`
+
 
 ## RESULTADO:
 
