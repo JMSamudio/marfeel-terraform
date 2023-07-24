@@ -17,7 +17,7 @@ La mejor manera que encontre reutilizando codigo fue utilizando los workspaces d
     - `export AWS_ACCESS_KEY_ID=`
     - `export AWS_SECRET_ACCESS_KEY=`
 
-### SCIPTS
+### SCRIPTS
 1. iniciar: `terraform init`
 2. crear workspaces, por ejemplo stage: `terraform workspace new stage`
 3. seleccionar workspace: `terraform workspace select stage`
