@@ -1,10 +1,8 @@
-# MARFEEL - Prueba Tecnica
+# TERRAFORM - MultiEKS
 
-**Por: Juan Manuel Samudio**
+Este proyecto contiene codigo en terarform para crear multiples clusters con argocd en cada uno de ellos.
 
-Este proyecto contiene codigo en terarform para crear multiples cluster e instalcion de argocd.
-
-La mejor manera que encontre reutilizando codigo fue utilizando los workspaces de terraform `terraform.workspace`. Esto permite tener tantos workspaces como cluster y argocd como se necesite. Para este caso son 3 (dev, stage y production), cada uno de ellos realiza cambios en distintos branchs.
+Se construye utilizando workspaces de terraform `terraform.workspace`. Esto permite tener tantos workspaces como cluster y argocd como se necesite. Para este caso son 3 (dev, stage y production), cada uno de ellos realiza cambios en distintos branchs.
 
 ## REQUERIMIENTOS
 1. cuenta de aws
